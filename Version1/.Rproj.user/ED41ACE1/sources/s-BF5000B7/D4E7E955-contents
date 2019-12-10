@@ -1,0 +1,19 @@
+require(ggplot2)
+
+resid = v_res
+
+resid = as.data.frame(cbind(Date,v_res))
+colnames(resid) = c("Date","SupplyShock", "Oil-Specific Shock", "Aggregate-Demand Shock")
+resid$Date = as.character(resid$Date)
+
+ggplot(data = resid, aes(x = 'Date', y= SupplyShock),group = 1)+
+  geom_line()+ 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black"))+
+  labs('Supply Shock',y = NULL, x = NULL) + theme(plot.title = element_text(hjust=0.5))+
+  scale_x_discrete(breaks = c(1,100,500))+
+  geom_hline(yintercept=0,size = 0.5, alpha = 0.5, linetype = "dashed")
+
+varplots = ggarrange(,ncol = 3,nrow = 3)
+
+ggsave(filename = "varplotslog.png", device = "png",width = 20,height = 10)

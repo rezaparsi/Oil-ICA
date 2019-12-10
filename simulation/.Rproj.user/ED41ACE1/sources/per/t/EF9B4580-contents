@@ -1,0 +1,44 @@
+
+  
+  # INPUT
+  # X: data vector or data matrix (assume more observations than variables)
+  # n: number of bins in histograms
+  #
+  # OUTPUT
+  # histograms, qqplot and excess kurtosis of each variable in X
+  require(ggplot2)
+  require(ggbiplot)
+  require(ggpubr)
+  
+  X = result$resid
+  X = as.data.frame(X)
+  
+  
+  
+for (i in 1:3) {
+    m <- mean(X[,i])
+    s <- sqrt(var(X[,i]))
+    xval <- seq(m-3*s,m+3*s,by=6*s/100)
+    normal  = as.data.frame(dnorm(xval,m,s))
+    names(normal) = "normal"
+    normal = cbind(normal,xval)
+    names(normal)[2] = "index"
+    
+    xaxis = paste("curval",i,sep = "")
+    his = ggplot()+
+      geom_histogram(data = X, bins = 20, aes_string(x=xaxis,y="..density.."), colour="black", fill="white")+
+       geom_area(data = normal, aes(x = index, y=normal), fill = "red",alpha = 0.3)+ labs(x = nodelabels[[i]])
+    
+    assign(paste("his",i,sep =""),his)
+    
+    # corresponding normal distribution
+    
+    # qq-plots
+    qq = ggqqplot(X[,i],conf.int.level = 0.90,size = 0.5)
+    assign(paste("qq",i,sep =""),qq)
+    
+   } 
+    
+    
+    normplots = ggarrange(his1,his2,his3,qq1,qq2,qq3,ncol = 3,nrow = 2)
+    ggsave(filename = "normplotsLAD.png",device = "png",width = 10)

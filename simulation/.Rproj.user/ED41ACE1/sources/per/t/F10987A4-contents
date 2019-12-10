@@ -1,0 +1,171 @@
+require(ggplot2)
+require(ggbiplot)
+require(ggpubr)
+
+Random = as.data.frame(cbind(1:87,Random[-c(1:12),]))
+colnames(Random) = c("index","Epsilon_1","Epsilon_2","Epsilon_3","Epsilon_4")
+for (i in 1:4) {
+  
+  xaxis = paste("Epsilon_",i,sep = "")
+  his = ggplot()+
+    geom_histogram(data = Random, bins = 50, aes_string(x=xaxis,y="..density.."), colour="black", fill="white")+
+    ylab(NULL)
+  
+  assign(paste("his",i,sep =""),his)
+  
+} 
+
+
+simhist100 = ggarrange(his1,his2,his3,his4,ncol = 2,nrow = 2)
+annotate_figure(simhist1000,
+                top = text_grob("True Structural Shocks", color = "black", face = "bold", size = 14))
+ggsave(filename = "simhist100.png",device = "png")
+
+
+
+strresiduals = as.data.frame(cbind(1:87,v_res))
+colnames(strresiduals) = c("index","R_Epsilon_1","R_Epsilon_2","R_Epsilon_3","R_Epsilon_4")
+
+for (i in 1:4) {
+  
+  xaxis = paste("R_Epsilon_",i,sep = "")
+  his = ggplot()+
+    geom_histogram(data = strresiduals, bins = 50, aes_string(x=xaxis,y="..density.."), colour="black", fill="white")+
+    ylab(NULL)
+  
+  assign(paste("his",i,sep =""),his)
+  
+} 
+
+
+R_simhist100 = ggarrange(his1,his2,his3,his4,ncol = 2,nrow = 2)
+annotate_figure(R_simhist100,
+                top = text_grob("Recovered Structural Shocks", color = "black", face = "bold", size = 14))
+ggsave(filename = "R_simhist100.png",device = "png")
+
+
+r_residuals = as.data.frame(cbind(1:87,reslg$ICs))
+colnames(r_residuals) = c("index","IC_1","IC_2","IC_3","IC_4")
+
+for (i in 1:4) {
+  
+  xaxis = paste("IC_",i,sep = "")
+  his = ggplot()+
+    geom_histogram(data = r_residuals, bins = 50, aes_string(x=xaxis,y="..density.."), colour="black", fill="white")+
+    ylab(NULL)
+  
+  assign(paste("his",i,sep =""),his)
+  
+} 
+
+
+IC_simhist100 = ggarrange(his1,his2,his3,his4,ncol = 2,nrow = 2)
+annotate_figure(IC_simhist1000,
+                top = text_grob("Independent Components", color = "Black", face = "bold", size = 14))
+ggsave(filename = "IC_simhist100.png",device = "png")
+
+
+
+
+
+Timeplot1 = ggplot()+
+  geom_line(data = Random, aes(x = index, y=Epsilon_2))+xlab(NULL)+ylab(NULL)+ggtitle("True Structural Shock")
+
+Timeplot11 = ggplot()+
+  geom_line(data = Random, aes(x = index, y=Epsilon_1))+ylab(NULL)+xlab("Time")
+
+Timeplot2 = ggplot()+
+  geom_line(data = strresiduals, aes(x = index, y=R_Epsilon_2))+xlab(NULL)+ylab(NULL)+ggtitle("Recovered Structural Shock")
+
+Timeplot22 = ggplot()+
+  geom_line(data = strresiduals, aes(x = index, y=R_Epsilon_1))+ylab(NULL)+xlab("Time")
+
+Timeplot3 = ggplot()+
+  geom_line(data = r_residuals, aes(x = index, y=IC_4))+xlab(NULL)+ylab(NULL)+ggtitle("Independent Component (4th)")
+
+Timeplot33 = ggplot()+
+  geom_line(data = r_residuals, aes(x = index, y=IC_2))+ylab(NULL)+xlab("Time")
+
+Timeplot = ggarrange(Timeplot1,Timeplot3,Timeplot2,Timeplot11,Timeplot33,Timeplot22,ncol = 3,nrow = 2)
+ggsave(filename = "Timeplot.png",device = "png",width=11)
+
+
+set.seed(1)
+x = rnorm(10000,0,1)
+y = rnorm(10000,0,1)
+
+ss = as.data.frame(cbind(x+3*y,y-x))
+true = as.data.frame(cbind(x,y))
+
+pca = prcomp(ss,center = TRUE, scale. = TRUE)
+pca = as.data.frame(pca$x)
+fast = fastICA(ss,n.comp = 2)
+tt = fast$X %*% fast$K
+plot(-tt[,1],type = "l",col = "red")
+lines(-tt[,2])
+
+
+fast = as.data.frame(fast$S)
+
+
+plot    = ggplot(ss, aes(x = V1, y=V2))+ geom_point() + labs(title = "Observed Data",y = "U1", x = "U2") + theme(plot.title = element_text(hjust=0.5))   
+pcaplot = ggplot(true, aes(x = x, y=y))+ geom_point() + labs(title = "True",y = expression(epsilon), x = expression(epsilon)) + theme(plot.title = element_text(hjust=0.5))
+fastplot = ggplot(fast, aes(x = V1, y=V2))+ geom_point() + labs(title = "ICA",y = expression(epsilon), x = expression(epsilon)) + theme(plot.title = element_text(hjust=0.5))       
+
+
+ggarrange(plot,pcaplot,fastplot,ncol = 3,nrow = 1)
+
+
+#ICA illustration
+
+set.seed(1)
+x = runif(500,0,2*3^0.5)
+y = runif(500,0,2*3^0.5)
+
+ss = as.data.frame(cbind(x+y,y-x))
+fast = fastICA(ss,n.comp = 2)
+fastp = as.data.frame(fast$X %*% fast$K %*% fast$W)
+fasts = as.data.frame(fast$S)
+
+
+
+plot = ggplot(ss, aes(x = V1, y=V2))+ geom_point() + labs(title = "Observed Data",y = expression(u[1]), x = expression(u[1])) + 
+  theme(plot.title = element_text(hjust=0.5))+
+  border()
+
+hist1 = ggplot()+ geom_histogram(data = ss, bins = 10, aes_string(x= "V1",y="..density.."))+
+  clean_theme()+
+  theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank(),panel.background = element_blank() )
+
+hist2 = ggplot()+ geom_histogram(data = ss, bins = 10, aes_string(x= "V2",y="..density.."))+
+  clean_theme() +rotate()+
+  theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank(),panel.background = element_blank() )
+
+
+
+obs = ggarrange(plot, hist2, hist1, NULL, 
+                ncol = 2, nrow = 2, align = "hv",
+                widths = c(1, 0.4), heights = c(1, 0.5)) 
+
+
+plot2 = ggplot(fastp, aes(x = V1, y=V2))+ geom_point() + labs(title = "Recovered Data",y = expression(epsilon[1]), x = expression(epsilon[2])) + 
+  theme(plot.title = element_text(hjust=0.5))+
+  border()
+
+hist12 = ggplot()+ geom_histogram(data = fasts, bins = 10, aes_string(x= "V1",y="..density.."))+
+  clean_theme()+
+  theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank(),panel.background = element_blank())
+
+hist22 = ggplot()+ geom_histogram(data = fasts, bins = 10, aes_string(x= "V2",y="..density.."))+
+  clean_theme() +rotate()+
+  theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank(),panel.background = element_blank())
+
+
+tru = ggarrange(plot2, hist22, hist12, NULL, 
+          ncol = 2, nrow = 2, align = "hv",
+          widths = c(1, 0.4), heights = c(1, 0.5))
+
+final = ggarrange(obs,tru,ncol = 2, nrow = 1)
+
+ggsave(filename = "icaillustration.png",device = "png",height = 5, width = 10)
+

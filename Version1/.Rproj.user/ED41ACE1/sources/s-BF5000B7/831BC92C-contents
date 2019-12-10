@@ -1,0 +1,23 @@
+
+order = array()
+
+for (i in seq(1,360,30)){
+  
+      
+data2 = Data[i:nrow(Data),]
+nlags <- 24 
+Data_can <- tsdata2canonicalform(data2,nlags)
+
+
+result <- VARLiNGAM(Data_can,"ols", pruning=FALSE, corank=0, ntests = FALSE,regstats=FALSE)
+
+ss1=shapiro.test(data2[,1])
+ss2=shapiro.test(data2[,2])
+ss3=shapiro.test(data2[,3])
+
+result$Bhat[[1]]
+result$var_order
+order = rbind(order,cbind(paste(i,j),t(result$var_order),round(var(data2[,1]),2),round(var(data2[,2]),2),round(var(data2[,3]),6),
+                          paste(round(kurtosis(data2[,1]),2),round(kurtosis(data2[,2]),2),round(kurtosis(data2[,3]),2),sep="/")))
+}
+order

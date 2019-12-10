@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1572296000720.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1251674350",
+    "id" : "6F84109B",
+    "lastKnownWriteTime" : 1573925833,
+    "last_content_update" : 1573925833,
+    "path" : "~/Downloads/VARLiNGAM/main_MonetaryPolicy.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "138,15",
+        "scrollLine" : "0",
+        "source_window_id" : ""
+    },
+    "relative_order" : 7,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

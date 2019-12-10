@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1572051500687.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "C45241D1",
+    "lastKnownWriteTime" : 1573836448,
+    "last_content_update" : 1573836448488,
+    "path" : "~/Downloads/VARLiNGAM/boot_conf_irf2.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "71,26",
+        "scrollLine" : "0"
+    },
+    "relative_order" : 9,
+    "source_on_save" : true,
+    "source_window" : "",
+    "type" : "r_source"
+}

@@ -1,0 +1,122 @@
+require(ggplot2)
+require(ggpubr)
+
+Chinaproblem = as.data.frame(cbind(JODI_clean_CS$TIME_PERIOD[-c(1)],cumsum(China[-c(1)]/100),total))
+Chinaproblem$V1 = as.Date(Chinaproblem$V1)
+
+Chinaproblemplot = ggplot()+
+  geom_line(data = Chinaproblem, aes(x = V1, y= V2),color="red")+ geom_line(data = Chinaproblem, aes(x = V1, y= total))+
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black"))+
+  labs('USA',y = NULL, x = NULL) + theme(plot.title = element_text(hjust=0.5))+
+  scale_x_date(date_breaks = "1 year",date_labels = "%Y")
+  
+#Example in slides
+
+Datecol   = seq(from = as.Date("1974-02-01"), to = as.Date("2018-12-1"), by = 'month')
+example = as.data.frame(cbind(Datecol,Data))
+colnames(example) = c("Datecol","sup","price","k")
+
+exampleplot1 = ggplot(data = example, aes(x = Datecol, y= sup))+ geom_line()+
+  theme(panel.border = element_rect(linetype = "solid", fill = NA),panel.grid.major = element_blank(),
+        panel.background = element_blank(),axis.line = element_line(colour = "black"))+
+  labs(y = 'Oil Production ', x = NULL) + theme(plot.title = element_text(hjust=0.5))+
+  scale_x_date(date_breaks = "4 year",date_labels = "%Y")+
+  geom_hline(yintercept=0,size = 0.5, alpha = 0.5, linetype = "dashed")
+
+exampleplot2 = ggplot(data = example, aes(x = Datecol, y= price))+ geom_line()+
+  theme(panel.border = element_rect(linetype = "solid", fill = NA),panel.grid.major = element_blank(),
+        panel.background = element_blank(),axis.line = element_line(colour = "black"))+
+  labs(y = 'Oil Price', x = NULL) + theme(plot.title = element_text(hjust=0.5))+
+  scale_x_date(date_breaks = "4 year",date_labels = "%Y")+
+  geom_hline(yintercept=0,size = 0.5, alpha = 0.5, linetype = "dashed")
+
+exampleplot3 = ggplot(data = example, aes(x = Datecol, y= k))+ geom_line()+
+  theme(panel.border = element_rect(linetype = "solid", fill = NA),panel.grid.major = element_blank(),
+        panel.background = element_blank(),axis.line = element_line(colour = "black"))+
+  labs(y = 'Economic Activity', x = NULL) + theme(plot.title = element_text(hjust=0.5))+
+  scale_x_date(date_breaks = "4 year",date_labels = "%Y")+
+  geom_hline(yintercept=0,size = 0.5, alpha = 0.5, linetype = "dashed")
+
+exampleplot = ggarrange(exampleplot2,exampleplot1,exampleplot3,ncol = 1,nrow = 3)
+
+ggsave(filename = "exampleplot.png", device = "png",width=10)
+
+
+
+
+
+Datecol   = seq(from = as.Date("1976-02-01"), to = as.Date("2018-12-1"), by = 'year')
+Supshock = c(mean(v_res[1:11,1]),colMeans(matrix(v_res[12:515,1],nrow=12)))
+pshock = c(mean(v_res[1:11,2]),colMeans(matrix(v_res[12:515,2],nrow=12)))
+Kshock  = c(mean(v_res[1:11,3]),colMeans(matrix(v_res[12:515,3],nrow=12)))
+
+strshocks = as.data.frame(cbind(Datecol,Supshock,pshock,Kshock))
+strshocks[,1] = as.Date(Datecol)
+
+strshocksplot1 = ggplot(data = strshocks, aes(x = Datecol, y= Supshock))+
+  geom_line()+
+  theme(panel.border = element_rect(linetype = "solid", fill = NA),panel.grid.major = element_blank(),
+        panel.background = element_blank(),axis.line = element_line(colour = "black"))+
+  labs(y = 'Supply Shocks', x = NULL) + theme(plot.title = element_text(hjust=0.5))+
+  scale_x_date(date_breaks = "4 years",date_labels = "%Y")+
+  geom_hline(yintercept=0,size = 0.5, alpha = 0.5, linetype = "dashed")
+
+strshocksplot2 = ggplot(data = strshocks, aes(x = Datecol, y= pshock))+
+  geom_line()+
+  theme(panel.border = element_rect(linetype = "solid", fill = NA),panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black"))+
+  labs(y = 'Oil-Specific Shocks', x = NULL) + theme(plot.title = element_text(hjust=0.5))+
+  scale_x_date(date_breaks = "4 years",date_labels = "%Y")+
+  geom_hline(yintercept=0,size = 0.5, alpha = 0.5, linetype = "dashed")
+
+strshocksplot3 = ggplot(data = strshocks, aes(x = Datecol, y= Kshock))+
+  geom_line()+
+  theme(panel.border = element_rect(linetype = "solid", fill = NA),panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black"))+
+  labs(y = 'Aggregate Demand Shocks', x = NULL) + theme(plot.title = element_text(hjust=0.5))+
+  scale_x_date(date_breaks = "4 years",date_labels = "%Y")+
+  geom_hline(yintercept=0,size = 0.5, alpha = 0.5, linetype = "dashed")
+
+
+varplots = ggarrange(strshocksplot1,strshocksplot3,strshocksplot2,ncol = 1,nrow = 3)
+
+ggsave(filename = "structuralshocksL.png", device = "png",width = 10,height = 5)
+
+
+
+
+oildecomp = t(Gamma0[2,]*t(u_res))
+suphis = c(mean(oildecomp[1:11,1]),colMeans(matrix(oildecomp[12:515,1],nrow=12)))
+oilsphis = c(mean(oildecomp[1:11,2]),colMeans(matrix(oildecomp[12:515,2],nrow=12)))
+demandhis = c(mean(oildecomp[1:11,3]),colMeans(matrix(oildecomp[12:515,3],nrow=12)))
+oildecomp = as.data.frame(cbind(Datecol,suphis,oilsphis,demandhis))
+oildecomp[,1] = as.Date(Datecol)
+
+
+hisdecompplot1 = ggplot()+
+  geom_line(data = oildecomp, aes(x = Datecol, y= suphis), linetype = "dashed")+
+  geom_line(data = oildecomp, aes(x = Datecol, y= oilsphis), linetype = "solid")+
+  geom_line(data = oildecomp, aes(x = Datecol, y= demandhis), linetype = "dotted")+
+  theme(panel.border = element_rect(linetype = "solid", fill = NA),panel.grid.major = element_blank(), axis.line = element_line(colour = "black"))+
+  labs(y = NULL, x = NULL) + theme(plot.title = element_text(hjust=0.5))+
+  scale_x_date(date_breaks = "4 years",date_labels = "%Y")+ ggtitle("Effect of Structural Shocks on Price of Oil ")
+
+
+ggsave(filename = "hisdecompplot1L.png", device = "png",width = 20,height = 10)
+
+
+oildecompcum = as.data.frame(cbind(Datecol,cumsum(suphis),cumsum(oilsphis),cumsum(demandhis)))
+colnames(oildecompcum) = c("Datecol","suphis","oilsphis","demandhis")
+oildecompcum[,1] = as.Date(Datecol)
+
+hisdecompplot2 = ggplot()+
+  geom_line(data = oildecompcum, aes(x = Datecol, y= suphis), linetype = "dashed")+
+  geom_line(data = oildecompcum, aes(x = Datecol, y= oilsphis), linetype = "solid")+
+  geom_line(data = oildecompcum, aes(x = Datecol, y= demandhis), linetype = "dotted")+
+  theme(panel.border = element_rect(linetype = "solid", fill = NA),panel.grid.major = element_blank(), axis.line = element_line(colour = "black"))+
+  labs(y = NULL, x = NULL) + theme(plot.title = element_text(hjust=0.5))+
+  scale_x_date(date_breaks = "4 years",date_labels = "%Y")+ ggtitle("Cumulative Effect of Structural Shocks on Price of Oil ")
+
+
+ggsave(filename = "hisdecompplot2L.png", device = "png",width = 20,height = 10)

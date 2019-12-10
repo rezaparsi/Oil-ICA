@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1563664003611.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "247967912",
+    "id" : "985BE19C",
+    "lastKnownWriteTime" : 1569966299,
+    "last_content_update" : 1569966299578,
+    "path" : "~/Downloads/VARLiNGAM/VARLiNGAM.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "107,4",
+        "scrollLine" : "0",
+        "source_window_id" : ""
+    },
+    "relative_order" : 5,
+    "source_on_save" : true,
+    "source_window" : "",
+    "type" : "r_source"
+}

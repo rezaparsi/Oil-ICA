@@ -1,0 +1,29 @@
+
+
+
+plot(JODI_clean_R$CN+JODI_clean_Ex$CN-JODI_clean_Imp$CN-JODI_clean_P$CN,type="l", col = "red",ylab = "ww")
+
+lines(-diff(JODI_clean_CS$CN),type="l")
+
+plot(diff(JODI_clean_CS$CN)+JODI_clean_D$CN[2:211]+JODI_clean_R$CN[2:211]+JODI_clean_Ex$CN[2:211]+JODI_clean_DU$CN[2:211]
+     -JODI_clean_Imp$CN[2:211]-JODI_clean_P$CN[2:211]+JODI_clean_T$CN[2:211]-JODI_clean_O$CN[2:211],type="l",ylab = "ww")
+
+
+
+JODI_clean2_CS = JODI_clean_CS[colSums(is.na(JODI_clean_CS))<1]
+JODI_clean2_CS = JODI_clean2_CS[,colSums(JODI_clean2_CS==0)<5]
+
+JODISec_clean_CS = filter(JODI2, JODI2$ENERGY_PRODUCT == "TOTPRODS" & JODI2$FLOW_BREAKDOWN == "CLOSTLV" & JODI2$UNIT_MEASURE == "KBBL")
+JODISec_clean_CS = JODISec_clean_CS[,-c(3,4,5,7)]
+JODISec_clean_CS = spread(JODISec_clean_CS,key = REF_AREA, value = OBS_VALUE)
+
+Date = paste(JODI_clean_CS$TIME_PERIOD,"-01",sep="")
+Date = format(as.Date(Date,format = "%Y-%m-%d"),"%b-%Y")
+JODI_clean_CS$TIME_PERIOD = Date
+
+
+
+
+
+
+

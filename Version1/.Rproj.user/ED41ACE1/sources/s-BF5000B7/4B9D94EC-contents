@@ -1,0 +1,12 @@
+
+e1  = rnorm(1000,0,1)
+x1 = seq(1:1000)
+x2 = runif(1000,-10,10) + e1
+e2 = rnorm(1000,0,1)
+y=rep(0,1000)
+y = x2 + 2 * x1 + 0.9 * e1 + e2
+lm = lm(formula = y ~ x2 + x1)
+summary(lm)
+cov(residuals.lm(lm),x1)
+cov(residuals.lm(lm),x2)
+var(residuals.lm(lm))

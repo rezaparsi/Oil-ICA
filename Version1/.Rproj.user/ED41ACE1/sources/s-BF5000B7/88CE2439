@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1571954452852.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "88CE2439",
+    "lastKnownWriteTime" : 1574101570,
+    "last_content_update" : 1574101570,
+    "path" : "~/Downloads/VARLiNGAM/simulation/sim2.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "11,2",
+        "scrollLine" : "0"
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

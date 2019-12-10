@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1574370610548.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "AFB758D4",
+    "lastKnownWriteTime" : 4328563272,
+    "last_content_update" : 1574370610548,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "id" : "20f43a70411d4fd28e9fef210b103989",
+        "name" : "fast",
+        "title" : "fast"
+    },
+    "relative_order" : 13,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "object_explorer"
+}

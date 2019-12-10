@@ -1,0 +1,11 @@
+mu1 = array(0,20)
+covv1 = array(0,20)
+counter = 1
+for (i in seq(0,0.99,0.05)){
+x = rnorm(1000,0,1)
+y = i * x +rnorm(1000,0,0.5)
+# plot(x,y)
+covv1[counter] = cov(x,y)
+mu1[counter] = mutinformation(discretize(x), discretize(y), method="emp")
+counter = counter + 1
+}

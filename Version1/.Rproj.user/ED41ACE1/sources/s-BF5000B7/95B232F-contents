@@ -1,0 +1,85 @@
+require(ggplot2)
+require(ggpubr)
+
+n <- 0
+
+nd = c("Oil Supply Shock","Oil-Specific Shock","Aggregate Demand Shock")
+
+for (i in 1:3){
+  for (j in 1:3){
+    
+    n <- n+1   
+    
+      index = c(0:16)
+      cirf <- c(IRF[n,],CI[[1]][n,],CI[[2]][n,])
+      di <- abs(max(cirf) - min(cirf))
+      mini <- min(cirf) - di/2 
+      maxi <- max(cirf) + di/2
+      cirf <- cbind(IRF[n,],CI[[1]][n,],CI[[2]][n,],index)
+      cirf <- as.data.frame(cirf)
+      
+      varchart = ggplot()+ 
+        geom_line(data = cirf, aes(x = index, y=V1))+ 
+        geom_ribbon(data = cirf,aes(x = index, ymin = V2, ymax = V3), fill = "grey70",alpha = 0.5)+
+        theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+                    panel.background = element_blank(), axis.line = element_line(colour = "black"))+
+        labs(title = nd[j],y = nodelabels[[i]], x = NULL) + theme(plot.title = element_text(hjust=0.5))+
+        scale_x_continuous(expand = c(0, 0))+
+        geom_hline(yintercept=0,size = 0.5, alpha = 0.5, linetype = "dashed")
+      
+      assign(paste("varchart",n,sep =""),varchart)
+      
+    
+  }
+}
+
+#varplots = ggarrange(varchart1,varchart2,varchart3,varchart4,varchart5,varchart6,varchart7,varchart8,
+                     #varchart9,varchart10,varchart11,varchart12,varchart13,varchart14,varchart15,varchart16,ncol = 4,nrow = 4)
+
+varplots = ggarrange(varchart1,varchart4,varchart7,varchart2,varchart5,varchart8,varchart3,varchart6,varchart9,ncol = 3,nrow = 3)
+
+ggsave(filename = "varplotslog.png", device = "png",width = 20,height = 10)
+ 
+
+#### pca vs ica plots
+
+require(ggplot2)
+require(ggpubr)
+require(fastICA)
+x = runif(1000,-1,1)
+y = runif(1000,-1,1)
+ss = as.data.frame(cbind(x+3*y,y-x))
+
+x2 = rnorm(500,0,1)
+y2 = rnorm(500,0,1)
+ss2 = as.data.frame(cbind(x2+3*y2,y2-x2))
+
+pca = prcomp(ss,center = TRUE, scale. = TRUE)
+pca = as.data.frame(pca$x)
+fast = fastICA(ss,n.comp = 2)
+fast = as.data.frame(fast$S)
+
+pca2 = prcomp(ss2,center = TRUE, scale. = TRUE)
+pca2 = as.data.frame(pca2$x)
+fast2 = fastICA(ss2,n.comp = 2)
+fast2 = as.data.frame(fast2$S)
+
+plot    = ggplot(ss, aes(x = V1, y=V2))+ geom_point() + labs(title = "Observed Data",y = "U1", x = "U2") + theme(plot.title = element_text(hjust=0.5))   
+pcaplot = ggplot(pca, aes(x = PC1, y=PC2))+ geom_point() + labs(title = "PCA",y = expression(epsilon), x = expression(epsilon)) + theme(plot.title = element_text(hjust=0.5))
+fastplot = ggplot(fast, aes(x = V1, y=V2))+ geom_point() + labs(title = "ICA",y = expression(epsilon), x = expression(epsilon)) + theme(plot.title = element_text(hjust=0.5))       
+
+plot2    = ggplot(ss2, aes(x = V1, y=y2))+ geom_point() + labs(title = "Observed Data",y = "U1", x = "U2") + theme(plot.title = element_text(hjust=0.5))
+pcaplot2 = ggplot(pca2, aes(x = PC1, y=PC2))+ geom_point() + labs(title = "PCA",y = expression(epsilon), x = expression(epsilon)) + theme(plot.title = element_text(hjust=0.5))
+fastplot2 = ggplot(fast2, aes(x = V1, y=y2))+ geom_point() + labs(title = "ICA",y = expression(epsilon), x = expression(epsilon)) + theme(plot.title = element_text(hjust=0.5)) 
+
+
+ggarrange(plot,pcaplot,fastplot,plot2,pcaplot2,fastplot2,ncol = 3,nrow = 2)
+ggsave(filename = "pcavsica",device = "png",width = 20,height = 10)
+
+
+
+
+
+
+
+
